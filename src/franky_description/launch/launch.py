@@ -13,13 +13,3 @@ def generate_launch_description:
 
 
     )
-echo "# Franky_AMR" >> README.md
-git init
-git add .
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/prabudhgautam/Franky_AMR.git
-git push -u origin main
-git remote add origin https://github.com/prabudhgautam/Franky_AMR.git
-git branch -M main
-git push -u origin main
