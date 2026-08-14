@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="franky">
+
+    <link name="base_footprint"/>
+
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <mesh filename="package://franky_description/meshes/base_link.STL"/>
+            </geometry>
+            <material name="base_material">
+                <color rgba="1.0 1.0 1.0 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="base_joint" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin rpy="0 0 0" xyz="0 0 0.033"/>
+    </joint>
+
+    
+    <link name="wheel_right_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="1.57 0 0"/>
+            <geometry>
+                <mesh filename="package://franky_description/meshes/wheel_right_link.STL"/>
+            </geometry>
+            <material name="wheel_material">
+                <color rgba="0.2 0.2 0.2 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="wheel_right_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="wheel_right_link"/>
+        <origin rpy="0 0 0" xyz="0 -0.07 0.0"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+
+    <link name="wheel_left_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+            <geometry>
+                <mesh filename="package://franky_description/meshes/wheel_left_link.STL"/>
+            </geometry>
+            <material name="wheel_material">
+                <color rgba="0.2 0.2 0.2 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="wheel_left_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="wheel_left_link"/>
+        <origin rpy="0 0 0" xyz="0 0.07 0.0"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+
+    <link name="caster_front_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://franky_description/meshes/caster_front_link.STL"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0.0 0.0 1.0 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="caster_front_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="caster_front_link"/>
+        <origin rpy="0 0 0" xyz="0.04755 0 -0.0275"/>
+    </joint>
+
+    <link name="caster_rear_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://franky_description/meshes/caster_rear_link.STL"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0.0 0.0 1.0 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="caster_rear_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="caster_rear_link"/>
+        <origin rpy="0 0 0" xyz="-0.04755 0 -0.0275"/>
+    </joint>
+</robot>
