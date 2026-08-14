@@ -7,11 +7,12 @@ from launch_ros.parameter_descriptions import ParameterValue
 from launch.substitutions import Command, LaunchConfiguration
 
 def generate_launch_description():
+    franky_description_dir = get_package_share_directory("franky_description")
     
     #instruction to declare the argument model
     model_arg = DeclareLaunchArgument(
         name="model",
-        default_value=os.path.join(get_package_share_directory("franky_description"), "URDF", "franky.urdf.xacro")
+        default_value=os.path.join(franky_description_dir, "URDF", "franky.urdf.xacro"),
         description="Absolute path to robot URDF file "
     ) 
     
@@ -21,7 +22,7 @@ def generate_launch_description():
     robot_state_publisher = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
-        parameter=[{"robot_description": robot_description}]
+        parameters=[{"robot_description": robot_description}]
     )
     
     joint_state_publisher_gui = Node(
@@ -32,13 +33,13 @@ def generate_launch_description():
     rviz_node = Node(
         package="rviz2",
         executable="rviz2",
-        name="rviz2"
-        output="screen"
+        name="rviz2",
+        output="screen",
         arguments=["-d", os.path.join(get_package_share_directory("franky_description"), "rviz", "display.rviz")]
     )
-    return LaunchDescription(
+    return LaunchDescription([
         model_arg,
         robot_state_publisher,
         joint_state_publisher_gui,
         rviz_node
-    )
+    ])
