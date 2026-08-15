@@ -3,7 +3,7 @@ from pathlib import Path
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
-from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable, IncludeLaunchDescription, TimerAction
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.parameter_descriptions import ParameterValue
 from launch.substitutions import Command, LaunchConfiguration
@@ -27,7 +27,7 @@ def generate_launch_description():
            is_ignition
            ]),
            value_type=str,
-           )
+    )
     # instruction for starting state publishers
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
@@ -50,11 +50,16 @@ def generate_launch_description():
         ]
     )
 
-    gz_spawn_entity = Node(
-        package="ros_gz_sim",
-        executable="create",
-        arguments=["-topic", "robot_description", "-name", "franky"],
-        output="screen"
+    gz_spawn_entity = TimerAction(
+        period=2.0,
+        actions=[
+            Node(
+                package="ros_gz_sim",
+                executable="create",
+                arguments=["-topic", "robot_description", "-name", "franky"],
+                output="screen"
+            )
+        ]
     )
 
     return LaunchDescription([
@@ -63,4 +68,5 @@ def generate_launch_description():
         gazebo_resource_path,
         gazebo,
         gz_spawn_entity
-    ])
+        ]
+    )
