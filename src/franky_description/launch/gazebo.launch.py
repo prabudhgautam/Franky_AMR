@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
@@ -13,16 +12,22 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 def generate_launch_description():
 
     franky_description_dir = get_package_share_directory("franky_description")
-    
-    #instruction to declare the argument model
-    model_arg = DeclareLaunchArgument(
-        name="model",
-        default_value=os.path.join(franky_description_dir, "URDF", "franky.urdf.xacro"),
-        description="Absolute path to robot URDF file "
-    ) 
-    
-    robot_description = ParameterValue(Command(["xacro ", LaunchConfiguration("model")]), value_type=str)
+    ros_distro = os.environ["ROS_DISTRO"]
+    is_ignition = "True" if ros_distro == "humble" else "False"
 
+    model_arg = DeclareLaunchArgument(name="model",default_value=os.path.join(
+                                        franky_description_dir, "URDF", "franky.urdf.xacro"
+                                        ),
+                                      description="Absolute path to robot URDF file ") 
+    
+    robot_description = ParameterValue(Command([
+           "xacro ",
+           LaunchConfiguration("model"),
+           " is_ignition:=",
+           is_ignition
+           ]),
+           value_type=str,
+           )
     # instruction for starting state publishers
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
@@ -37,20 +42,19 @@ def generate_launch_description():
         ]
     )
 
-    gazebo = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory("ros_gz_sim"), "launch", "gz_sim.launch.py")
-        ),
+    gazebo = IncludeLaunchDescription(PythonLaunchDescriptionSource([
+        os.path.join(
+            get_package_share_directory("ros_gz_sim"), "launch"), "/gz_sim.launch.py"]),
         launch_arguments=[
-            ("gz_args", [" -v 4", " -r", " empty.sdf"]),
-        ],
+            ("gz_args", [" -v 4", " -r"])
+        ]
     )
 
     gz_spawn_entity = Node(
         package="ros_gz_sim",
         executable="create",
-        output="screen",
         arguments=["-topic", "robot_description", "-name", "franky"],
+        output="screen"
     )
 
     return LaunchDescription([
@@ -58,5 +62,5 @@ def generate_launch_description():
         robot_state_publisher_node,
         gazebo_resource_path,
         gazebo,
-        gz_spawn_entity,
+        gz_spawn_entity
     ])

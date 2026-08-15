@@ -2,8 +2,13 @@
 
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="franky">
 
+    <xacro:arg name="is_ignition" default="true"/>
+
     <!-- Include Gazebo Parameters -->
     <xacro:include filename="$(find franky_description)/URDF/franky_gazebo.xacro" />
+
+    <!-- Include ros2_control -->
+    <xacro:include filename="$(find franky_description)/URDF/franky_ros2_control.xacro" />
 
     <link name="base_footprint"/>
 
@@ -181,5 +186,6 @@
         <parent link="base_link"/>
         <child link="can_link"/>
         <origin rpy="0 0 0" xyz="0 0 0.078"/>
-    </joint>"""" -->
+    </joint>
+--> 
 </robot>
