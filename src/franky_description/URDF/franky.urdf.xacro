@@ -2,8 +2,6 @@
 
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="franky">
 
-    <xacro:arg name="is_ignition" default="true"/>
-
     <!-- Include Gazebo Parameters -->
     <xacro:include filename="$(find franky_description)/URDF/franky_gazebo.xacro" />
 

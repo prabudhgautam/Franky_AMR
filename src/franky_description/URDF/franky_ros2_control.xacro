@@ -2,9 +2,9 @@
 
 <robot name="franky" xmlns:xacro="http://www.ros.org/wiki/xacro">
     <ros2_control name="RobotSystem" type="system">
-        <!-- Always use IgnitionSystem for Gazebo Sim -->
+        <!-- Always use GazeboSimSystem for Gazebo Sim (Harmonic, Jazzy) -->
         <hardware>
-            <plugin>ign_ros2_control/IgnitionSystem</plugin>
+            <plugin>gz_ros2_control/GazeboSimSystem</plugin>
         </hardware>
 
         <joint name="wheel_right_joint">
