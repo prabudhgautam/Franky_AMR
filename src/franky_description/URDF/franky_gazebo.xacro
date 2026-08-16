@@ -41,17 +41,10 @@
     </gazebo>
 
     <gazebo>
-        <xacro:if value="$(arg is_ignition)">
-            <plugin filename="ign_ros2_control-system" name="ign_ros2_control::IgnitionROS2ControlPlugin">
-                <parameters>$(find franky_controller)/config/franky_controllers.yaml</parameters>
-            </plugin>
-        </xacro:if>
-
-        <xacro:unless value="$(arg is_ignition)">
-            <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-                <parameters>$(find franky_controller)/config/franky_controllers.yaml</parameters>
-            </plugin>
-        </xacro:unless>
+        <!-- Always use Ignition System for Gazebo Sim -->
+        <plugin filename="ign_ros2_control-system" name="ign_ros2_control::IgnitionROS2ControlPlugin">
+            <parameters>$(find franky_controller)/config/franky_controllers.yaml</parameters>
+        </plugin>
     </gazebo>
 
 </robot>

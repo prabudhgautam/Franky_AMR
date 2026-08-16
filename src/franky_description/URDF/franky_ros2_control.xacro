@@ -2,17 +2,10 @@
 
 <robot name="franky" xmlns:xacro="http://www.ros.org/wiki/xacro">
     <ros2_control name="RobotSystem" type="system">
-        <xacro:if value="$(arg is_ignition)">
-            <hardware>
-                <plugin>ign_ros2_control/IgnitionSystem</plugin>
-            </hardware>
-        </xacro:if>
-
-        <xacro:unless value="$(arg is_ignition)">
-            <hardware>
-                <plugin>gz_ros2_control/GazeboSimSystem</plugin>
-            </hardware>
-        </xacro:unless>
+        <!-- Always use IgnitionSystem for Gazebo Sim -->
+        <hardware>
+            <plugin>ign_ros2_control/IgnitionSystem</plugin>
+        </hardware>
 
         <joint name="wheel_right_joint">
             <command_interface name="velocity">
@@ -33,3 +26,4 @@
         </joint>
     </ros2_control>
 </robot>
+
