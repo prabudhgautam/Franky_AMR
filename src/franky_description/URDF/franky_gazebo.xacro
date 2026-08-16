@@ -41,7 +41,6 @@
     </gazebo>
 
     <gazebo>
-        <!-- Always use Ignition System for Gazebo Sim -->
         <plugin filename="ign_ros2_control-system" name="ign_ros2_control::IgnitionROS2ControlPlugin">
             <parameters>$(find franky_controller)/config/franky_controllers.yaml</parameters>
         </plugin>

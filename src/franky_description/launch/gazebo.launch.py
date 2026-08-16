@@ -13,7 +13,7 @@ def generate_launch_description():
 
     franky_description_dir = get_package_share_directory("franky_description")
     ros_distro = os.environ["ROS_DISTRO"]
-    is_ignition = "True" if ros_distro == "humble" else "False"
+    is_ignition = "True" if ros_distro == "jazzy" else "False"
 
     model_arg = DeclareLaunchArgument(name="model",default_value=os.path.join(
                                         franky_description_dir, "URDF", "franky.urdf.xacro"
