@@ -7,7 +7,7 @@ class Turtlesim(Node):
         super().__init__("turtlesim")
 
         self.T1_pose_sub = self.create_subscription(Pose, "/turtle1/pose", self.turtle1PoseCallback, 10)
-        self.T2_pose_sub = self.create_subscription(Pose, "/turtleninja/pose", self.turtle2PoseCallback, 10)
+        self.T2_pose_sub = self.create_subscription(Pose, "/turtle2/pose", self.turtle2PoseCallback, 10)
 
         self.lastPose_T1 = Pose()
         self.lastPose_T2 = Pose()        

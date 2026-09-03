@@ -1,0 +1,64 @@
+To answer your question about the multithreaded model in ROS 2, here is a detailed explanation based on the content from Mastering ROS 2 for Robotics Programming:
+What is the Multithreaded Model in ROS 2?
+Definition:
+In ROS 2, the multithreaded model refers to how the ROS 2 executor manages the execution of callbacks (such as subscriber callbacks, service requests, timers, etc.) using multiple threads. This is in contrast to the single-threaded model, where all callbacks are executed sequentially in a single thread.
+How it Works:
+The executor in ROS 2 acts as a scheduler, deciding when each callback should run.With a multithreaded executor, multiple callbacks can be processed in parallel, each on a different thread. This allows for greater concurrency and can improve the responsiveness and throughput of your robotic application, especially when callbacks are computationally intensive or may block for some time.The multithreaded executor is particularly useful when you have nodes that need to handle multiple tasks simultaneously, such as processing sensor data while responding to service requests.
+Example Usage:
+Suppose you have a node that subscribes to a camera topic (which may deliver large image messages at high frequency) and also provides a service to process those images. Using a multithreaded executor, the node can process incoming images and handle service requests at the same time, without one blocking the other.
+Implementation:
+In C++, you can use the rclcpp::executors::MultiThreadedExecutor class to create a multithreaded executor. Here is a sample code snippet:
+#include "rclcpp/rclcpp.hpp"
+int main(int argc, char ** argv)
+{
+rclcpp::init(argc, argv);
+auto node = std::make_shared();
+rclcpp::executors::MultiThreadedExecutor executor;
+executor.add_node(node);
+executor.spin();
+rclcpp::shutdown();
+return 0;
+}
+
+Advantages:
+Improved concurrency: Multiple callbacks can be processed at the same time.Better resource utilization: Makes use of multi-core CPUs.Reduced latency: Long-running callbacks do not block others.
+When to Use:
+Use the multithreaded model when your node has multiple independent callbacks that may block or take significant time to execute.For simple nodes with lightweight callbacks, the single-threaded executor may be sufficient and simpler.
+Reference from the Document:
+"The executors are responsible for coordinating the execution of callbacks (like subscribe callbacks/functions) in ROS 2 nodes. There are single-threaded executors and multithreaded executors. A single-threaded executor executes the callbacks of a node in a single thread, whereas a multithreaded executor executes in parallel using multiple threads, which allows greater concurrency."
+This model is a key feature in ROS 2 for building scalable and responsive robotic systems, especially as robots become more complex and require handling many tasks in parallel.
+
+
+Let's clarify the difference between composable and non-composable nodes in ROS 2, specifically regarding multithreading:
+Non-composable Nodes
+Definition: Each non-composable node runs as its own separate process.Multithreading: Each process (node) can use either a single-threaded or multithreaded executor. This means you can choose to run callbacks in parallel (multithreaded) or sequentially (single-threaded) within that node's process.Why/When: Non-composable nodes are useful for isolation—if one crashes, others are unaffected. However, they use more memory and have higher communication latency between nodes because data must go through inter-process communication.
+Composable Nodes
+Definition: Multiple composable nodes are loaded into a single process called a container. This allows them to share memory and resources.Multithreading: The container process typically uses a multithreaded executor to manage all the callbacks from all the loaded nodes. This enables high concurrency and efficient parallel processing of callbacks across all nodes in the container.Why/When: Composable nodes are ideal when you want to minimize memory usage and communication latency (since nodes can share data directly in memory). This is especially beneficial when nodes need to communicate frequently or process high-rate data (like sensor streams).
+Which Uses Multithreading and Why?
+Both composable and non-composable nodes can use multithreading, but:
+Composable nodes are designed to take full advantage of multithreading because a single container process can efficiently manage many nodes and their callbacks in parallel.Non-composable nodes can also use multithreading, but each node is in its own process, so parallelism is limited to within that node.Why use multithreading?To process multiple callbacks (like sensor data, service requests, timers) at the same time, improving responsiveness and throughput.In composable nodes, multithreading is especially powerful because it allows all nodes in the container to benefit from shared resources and parallel execution.
+Example:
+If you have three nodes (A, B, C) that need to process data quickly and communicate often:
+As non-composable nodes: Each runs in its own process, and you can use a multithreaded executor in each, but communication between them is slower.As composable nodes: All three are loaded into one container process, and a multithreaded executor can process their callbacks in parallel, with fast, shared-memory communication.
+Summary Table:
+Node Type Process Model Multithreading Communication Latency Memory Usage Best For Non-composable Separate Optional Higher Higher Isolation, robustness 
+Composable Shared Recommended Lower Lower Efficiency, high-frequency comm 
+Reference from the document:
+"Composable nodes allow multiple nodes to share computational resources and memory, thereby reducing communication latency through zero-copy communication and improving overall efficiency... We can execute all nodes in a multithreaded executor to make the application faster. The single-threaded executor will be appropriate for applications where there is little processing in each node’s callback."
+In summary: Composable nodes are designed to use multithreading for maximum efficiency and low latency, while non-composable nodes can use multithreading but are more isolated and less efficient for high-frequency communication.
+
+
+To answer your question: A process and a node are not the same thing in ROS 2, but they are closely related. Here’s a clear explanation based on the document:
+What is a Process?
+A process is an instance of a running program in your operating system. Each process has its own memory space and resources.In ROS 2, when you run an executable (like a compiled C++ or Python script), it starts a process.
+What is a Node?
+A node is a fundamental ROS 2 concept: it is a participant in the ROS 2 graph that performs a specific task (like reading sensor data, controlling actuators, or processing information).In ROS 2, a node is typically implemented as a process, but a process can contain one or more nodes.Nodes use ROS 2 APIs to communicate with other nodes via topics, services, and actions.
+Relationship and Differences
+Non-composable nodes: Each node runs in its own process (one node per process). This means each node is isolated, and if one crashes, others are unaffected.Composable nodes: Multiple nodes can be loaded into a single process (called a container). This allows them to share memory and resources, improving efficiency and reducing communication latency.Key difference:A process is an OS-level concept (the running program).A node is a ROS-level concept (the logical participant in the ROS computation graph).In ROS 2, you can have one node per process (non-composable) or multiple nodes per process (composable).
+Example:
+If you run ros2 run demo_nodes_cpp talker, you start a process that contains a single node (the talker).If you use a container to load multiple composable nodes, you have one process running several nodes inside it.
+Reference from the document:
+"A ROS 2 node is a single process that performs some sort of computation, such as collecting sensor data, processing that data, or other operations in the robot PC or the operator PC. ... While a node is often associated with a process, ROS 2 allows multiple nodes to exist within a single process, offering greater flexibility and efficiency."
+Summary:
+Process: OS-level running program; may contain one or more nodes.Node: ROS-level logical unit; can run alone in a process or share a process with other nodes (if composable).
+This distinction is important for understanding how to structure and optimize your ROS 2 applications.

@@ -26,7 +26,7 @@ setup(
         'console_scripts': [
             'publisher = franky_py_examples.publisher:main',
             'subscriber = franky_py_examples.subscriber:main',
-            'turtle_subscriber = franky_py_examples.turtle_subcriber:main'
+            'turtle_subscriber = franky_py_examples.turtle_subscriber:main'
         ],
     },
 )
