@@ -62,3 +62,14 @@ Reference from the document:
 Summary:
 Process: OS-level running program; may contain one or more nodes.Node: ROS-level logical unit; can run alone in a process or share a process with other nodes (if composable).
 This distinction is important for understanding how to structure and optimize your ROS 2 applications.
+
+
+Shebang = instruction to the OS ("which interpreter to use")
+Node files are run by the OS → need shebang
+Launch files are run by Python (via ros2 launch) → no shebang needed
+
+When you run ros2 launch franky_controller my_launch.py, the ros2 launch command is already a Python script. It imports your launch file as a Python module:
+
+# Inside ros2 launch (simplified):
+import importlib
+module = importlib.import_module("my_launch")

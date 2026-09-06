@@ -1,5 +1,6 @@
-from launch import LaunchDescription
-from launch.actions import TimerAction, DeclareLaunchArgument
+from launch import LaunchDescription 
+from launch.substitutions import LaunchConfiguration
+from launch.actions import TimerAction, DeclareLaunchArgument 
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 import os
@@ -12,11 +13,6 @@ def generate_launch_description():
         "franky_controllers.yaml",
     )
 
-    use_python_arg = DeclareLaunchArgument(
-        "use_python",
-        default_value="True"
-    )
-
     wheel_radius_arg = DeclareLaunchArgument(
         "wheel_radius",
         default_value="0.033"
@@ -26,6 +22,9 @@ def generate_launch_description():
         "wheel_separation",
         default_value="0.17"
     )
+
+    wheel_radius = LaunchConfiguration("wheel_radius")
+    wheel_separation = LaunchConfiguration("wheel_separation") 
 
 
     joint_state_broadcaster_spawner = TimerAction(
@@ -68,9 +67,26 @@ def generate_launch_description():
         ],
     )
 
-    simple_controller_py = Node()
+    simple_controller_py = TimerAction(
+        period=5.0,
+        actions=[
+            Node(
+                package = "franky_controller",
+                executable = "simple_controller.py",
+                parameters = [
+                    {"wheel_radius": wheel_radius},
+                    {"wheel_separation": wheel_separation}
+                ],
+                output = "screen"
+            )
+        ],
+    )
+
 
     return LaunchDescription([
+        wheel_radius_arg,
+        wheel_separation_arg,
         joint_state_broadcaster_spawner,
         simple_controller_spawner,
+        simple_controller_py
     ])
