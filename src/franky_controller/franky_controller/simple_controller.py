@@ -24,13 +24,16 @@ class SimpleController(Node):
 
         self.left_wheel_prev_pos = 0.0
         self.right_wheel_prev_pos = 0.0
-        self.prev_time = self.get_clock().now()
+        self.prev_time = None
 
         self.wheel_cmd_pub = self.create_publisher(Float64MultiArray, "simple_velocity_controller/commands", 10)
         self.vel_sub_ = self.create_subscription(TwistStamped, "franky_controller/cmd_vel", self.velCallback, 10)
         self.joint_state_sub_ = self.create_subscription(JointState, "joint_states", self.jointCallback, 10)
-        self.speed_conversion_ = np.array([[self.wheel_radius/2, self.wheel_radius/2],
-                                           [self.wheel_radius/self.wheel_separation, -self.wheel_radius/self.wheel_separation]])
+        self.speed_conversion_ = np.array([
+            [self.wheel_radius / 2.0, self.wheel_radius / 2.0],
+            [self.wheel_radius / self.wheel_separation,
+              -self.wheel_radius / self.wheel_separation]
+        ])
         
         self.get_logger().info(f"Conversion matrix is {self.speed_conversion_}")
 
@@ -43,20 +46,42 @@ class SimpleController(Node):
         wheel_speed_msg = Float64MultiArray()
         wheel_speed_msg.data = [wheel_speed[1,0], wheel_speed[0,0]]
         self.wheel_cmd_pub.publish(wheel_speed_msg)
+        self.get_logger().info(f"Published wheel speeds: {wheel_speed_msg.data}")
 
     def jointCallback(self, msg):
-        dp_left = msg.position[1] - self.left_wheel_prev_pos
-        dp_right = msg.position[0] - self.right_wheel_prev_pos
-        dt = Time.from_msg(msg.header.stamp) - self.prev_time
+        if "wheel_left_joint" not in msg.name or \
+           "wheel_right_joint" not in msg.name:
+            self.get_logger().warning("Required wheel joints not found")
+            return
 
-        self.left_wheel_prev_pos = msg.position[1]
-        self.right_wheel_prev_pos = msg.position[0]
-        self.prev_time = Time.from_msg(msg.header.stamp)
+        left_idx = msg.name.index("wheel_left_joint")
+        right_idx = msg.name.index("wheel_right_joint")
 
-        fi_left = dp_left/(dt.nanoseconds / S_TO_NS)
-        fi_right = dp_right/(dt.nanoseconds / S_TO_NS)
+        current_time = Time.from_msg(msg.header.stamp)
 
-        linear_velocity = self.wheel_radius/2 * (fi_left + fi_right)
+        if self.prev_time is None:
+            self.prev_time = current_time
+            self.left_wheel_prev_pos = msg.position[left_idx]
+            self.right_wheel_prev_pos = msg.position[right_idx]
+            return
+        dt = (current_time - self.prev_time).nanoseconds / S_TO_NS
+
+        if dt <= 0.0:
+            self.get_logger().warning("Invalid joint state time difference, skipping message")
+            self.prev_time = current_time
+            return
+
+        dp_left = msg.position[left_idx] - self.left_wheel_prev_pos
+        dp_right = msg.position[right_idx] - self.right_wheel_prev_pos
+
+        self.left_wheel_prev_pos = msg.position[left_idx]
+        self.right_wheel_prev_pos = msg.position[right_idx]
+        self.prev_time = current_time
+
+        fi_left = dp_left / dt
+        fi_right = dp_right / dt
+
+        linear_velocity = self.wheel_radius * (fi_right + fi_left) / 2.0
         angular_velocity = self.wheel_radius/self.wheel_separation * (fi_right - fi_left)
 
         self.get_logger().info(f"linear_velocity: {linear_velocity}, angular_velocity: {angular_velocity}")
