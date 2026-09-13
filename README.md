@@ -2,8 +2,7 @@
 
 A differential-drive Autonomous Mobile Robot (AMR) built as a **ROS 2 (Jazzy)** workspace, simulated in **Gazebo (gz-sim)** with `ros2_control` / `gz_ros2_control`, custom kinematics, and odometry-based trajectory visualization.
 
-> This repo is both a working simulated robot stack **and** a personal ROS 2 learning sandbox — the two are kept in separate packages (see [Repository Structure](https://claude.ai/chat/e0aadcee-c073-418e-b051-dad6aed92e21#-repository-structure)).
-
+> This repo is both a working simulated robot stack **and** a personal ROS 2 learning sandbox.
 ---
 
 ## 📦 Overview
