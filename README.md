@@ -59,12 +59,14 @@ flowchart LR
     A["cmd_vel<br/>(TwistStamped)"] --> B["simple_controller.py<br/>(inverse kinematics)"]
     B --> C["simple_velocity_controller<br/>(JointGroupVelocityController)"]
     C --> D["gz_ros2_control plugin<br/>(Gazebo Sim)"]
-    D --> E["/joint_states"]
-    E --> B
-    B --> F["/franky_controller/odom"]
-    B --> G["TF: odom → base_footprint"]
-    F --> H["Trajectory_Viz_Node<br/>(franky_utils)"]
-    H --> I["nav_msgs/Path<br/>for RViz"]
+    D --> E["Gazebo physics"]
+    E --> F["joint_state_broadcaster<br/>/joint_states"]
+    F --> G["feedback"]
+    G --> B
+
+    B --> H["odom + TF<br/>/franky_controller/odom"]
+    H --> I["Trajectory_Viz_Node<br/>(franky_utils)"]
+    I --> J["nav_msgs/Path<br/>for RViz"]
 ```
 
 1. **Description** — `franky.urdf.xacro` defines the robot's links/joints and pulls in Gazebo contact parameters and the `ros2_control` hardware interface (velocity-controlled wheel joints).
