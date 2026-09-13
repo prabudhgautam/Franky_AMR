@@ -58,7 +58,7 @@ Franky_AMR/
 flowchart LR
     A["cmd_vel<br/>(TwistStamped)"] --> B["simple_controller.py<br/>(inverse kinematics)"]
     B --> C["simple_velocity_controller<br/>(JointGroupVelocityController)"]
-    C --> D["gz_ros2_control plugin<br/>(Gazebo Sim)"]
+    C --> D["gz_ros2_control plugin<br/>(Gazebo Sim interface)"]
     D --> E["Gazebo physics"]
     E --> F["joint_state_broadcaster<br/>/joint_states"]
     F --> G["feedback"]
