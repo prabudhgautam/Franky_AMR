@@ -54,7 +54,7 @@ Franky_AMR/
 
 ## 🧠 How It Works
 
-```
+```mermaid
 flowchart LR
     A["cmd_vel<br/>(TwistStamped)"] --> B["simple_controller.py<br/>(inverse kinematics)"]
     B --> C["simple_velocity_controller<br/>(JointGroupVelocityController)"]
