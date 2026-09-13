@@ -18,7 +18,7 @@ def generate_launch_description():
     
     robot_description = ParameterValue(Command(["xacro ", LaunchConfiguration("model")]), value_type=str)
 
-    # #instruction for starting state publishers
+    # #instruction for starting state publishers #robot_state_publisher is itself a TF broadcaster. 
     robot_state_publisher = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",

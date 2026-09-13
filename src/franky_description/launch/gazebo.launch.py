@@ -23,7 +23,7 @@ def generate_launch_description():
            ]),
            value_type=str,
     )
-    # instruction for starting state publishers
+    # instruction for starting state publishers #robot_state_publisher is itself a TF broadcaster.
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
