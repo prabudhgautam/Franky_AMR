@@ -2,7 +2,7 @@
 
 A differential-drive Autonomous Mobile Robot (AMR) built as a **ROS 2 (Jazzy)** workspace, simulated in **Gazebo (gz-sim)** with `ros2_control` / `gz_ros2_control`, custom kinematics, and odometry-based trajectory visualization.
 
-> This repo is both a working simulated robot stack **and** a personal ROS 2 learning sandbox.
+> This repo is a working simulated robot stack for learning and experimenting with ROS 2 mobile robotics.
 ---
 
 ## 📦 Overview
@@ -24,29 +24,24 @@ Franky is a two-wheel differential-drive robot with front and rear caster wheels
 
 ```
 Franky_AMR/
-└── src/
-    ├── franky_description/       # Robot model: URDF/Xacro, meshes, RViz + Gazebo launch files
-    │   ├── URDF/
-    │   │   ├── franky.urdf.xacro          # Main robot description (links, joints, inertials)
-    │   │   ├── franky_gazebo.xacro        # Gazebo friction/contact params + gz_ros2_control plugin
-    │   │   └── franky_ros2_control.xacro  # ros2_control hardware interface (velocity command, pos/vel state)
-    │   ├── meshes/                        # STL visual/collision meshes (base, wheels, casters)
-    │   ├── rviz/display.rviz              # Saved RViz layout
-    │   └── launch/
-    │       ├── display.launch.py          # RViz-only visualization (robot_state_publisher + joint_state_publisher_gui)
-    │       └── gazebo.launch.py           # Spawns Franky in Gazebo Sim
-    │
-    ├── franky_controller/         # Custom differential-drive controller
-    │   ├── franky_controller/simple_controller.py   # Inverse + forward kinematics, odom + TF publishing
-    │   ├── config/franky_controllers.yaml           # controller_manager + JointGroupVelocityController config
-    │   └── launch/controller.launch.py              # Spawns joint_state_broadcaster, velocity controller, and the node
-    │
-    ├── franky_utils/              # Supporting tools
-    │   └── franky_utils/Trajectory_Viz_Node.py       # Subscribes to /odom, publishes nav_msgs/Path for RViz
-    │
-    ├── franky_py_examples/        # ROS 2 fundamentals sandbox (pub/sub, static TF, turtlesim)
-    ├── frankybot_cpp_examples/    # Empty C++ package scaffold — reserved for future rclcpp work
-    └── Theory/                    # Personal study notes on ROS 2 executors, nodes vs. processes, etc.
+├── franky_description/       # Robot model: URDF/Xacro, meshes, RViz + Gazebo launch files
+│   ├── URDF/
+│   │   ├── franky.urdf.xacro          # Main robot description (links, joints, inertials)
+│   │   ├── franky_gazebo.xacro        # Gazebo friction/contact params + gz_ros2_control plugin
+│   │   └── franky_ros2_control.xacro  # ros2_control hardware interface (velocity command, pos/vel state)
+│   ├── meshes/                        # STL visual/collision meshes (base, wheels, casters)
+│   ├── rviz/display.rviz              # Saved RViz layout
+│   └── launch/
+│       ├── display.launch.py          # RViz-only visualization (robot_state_publisher + joint_state_publisher_gui)
+│       └── gazebo.launch.py           # Spawns Franky in Gazebo Sim
+│
+├── franky_controller/         # Custom differential-drive controller
+│   ├── franky_controller/simple_controller.py   # Inverse + forward kinematics, odom + TF publishing
+│   ├── config/franky_controllers.yaml           # controller_manager + JointGroupVelocityController config
+│   └── launch/controller.launch.py              # Spawns joint_state_broadcaster, velocity controller, and the node
+│
+└── franky_utils/              # Supporting tools
+    └── franky_utils/Trajectory_Viz_Node.py       # Subscribes to /odom, publishes nav_msgs/Path for RViz
 ```
 
 ---
@@ -157,7 +152,7 @@ Live robot transform
 ### Build
 
 ```
-# From your ROS 2 workspace root, with this repo's src/ folder in place
+# From the repository root
 colcon build
 source install/setup.bash
 ```
@@ -191,24 +186,12 @@ ros2 run franky_utils Trajectory_Viz_Node.py
 
 ---
 
-## 🧪 Learning Sandbox
-
-Two packages are intentionally kept separate from the main robot stack, as they document the ROS 2 fundamentals this project was built on rather than being part of Franky's runtime pipeline:
-
-- **`franky_py_examples`** — minimal publisher/subscriber pair, a static TF broadcaster example, and a turtlesim node computing the relative translation between two turtles.
-- **`Theory/`** — written notes on ROS 2 executors (single- vs. multi-threaded), composable vs. non-composable nodes, and the process-vs-node distinction, plus a reference `rosgraph.png`.
-
-`frankybot_cpp_examples` is a scaffolded-but-empty `ament_cmake` package, reserved for future `rclcpp`-based work.
-
----
-
 ## 🗺️ Roadmap
 
 - [ ] Fill in package descriptions, maintainers, and licenses (currently `TODO` in `package.xml`)
 - [ ] Add a top-level `LICENSE` file
 - [ ] Integrate Nav2 for autonomous navigation (costmaps, planners, AMCL/SLAM)
 - [ ] Add sensors (LiDAR/IMU/camera) to the URDF and Gazebo config
-- [ ] Populate `frankybot_cpp_examples` with `rclcpp` implementations
 - [ ] Add unit/integration tests beyond the default `ament_lint` checks
 
 ---
