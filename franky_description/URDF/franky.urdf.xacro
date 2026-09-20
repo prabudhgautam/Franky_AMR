@@ -178,7 +178,7 @@
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://bumperbot_description/meshes/imu_link.STL" />
+            <mesh filename="package://franky_description/meshes/imu_link.STL" />
           </geometry>
           <material name="">
             <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
@@ -187,7 +187,7 @@
         <collision>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://bumperbot_description/meshes/imu_link.STL" />
+            <mesh filename="package://franky_description/meshes/imu_link.STL" />
           </geometry>
         </collision>
     </link>
@@ -199,22 +199,35 @@
         <axis xyz="0 0 0" />
     </joint>
 
-<!--    <link name="can_link">
+    <link name="lidar_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.2" />
+            <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+                     iyy="0.0001" iyz="0.0"
+                     izz="0.0001" />
+        </inertial>
         <visual>
-            <origin xyz="-0.03 0.033 0" rpy="1.57 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://franky_description/meshes/can.STL"/>
+                <mesh filename="package://franky_description/meshes/laser_link.STL"/>
             </geometry>
             <material name="red">
                 <color rgba="1.0 0.0 0.0 1.0"/>
             </material>
         </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://franky_description/meshes/laser_link.STL"/>
+            </geometry>
+        </collision>
     </link>
 
-    <joint name="can_joint" type="fixed">
+    <joint name="lidar_joint" type="fixed">
         <parent link="base_link"/>
-        <child link="can_link"/>
-        <origin rpy="0 0 0" xyz="0 0 0.078"/>
+        <child link="lidar_link"/>
+        <origin rpy="0 0 0" xyz="0.0 0.0 0.11"/>
     </joint>
---> 
+ 
 </robot>

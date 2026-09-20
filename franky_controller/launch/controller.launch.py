@@ -111,7 +111,7 @@ def generate_launch_description():
     )
 
     simple_controller_py = TimerAction(
-        period=4.0,
+        period=3.0,
         actions=[
             Node(
                 package = "franky_controller",

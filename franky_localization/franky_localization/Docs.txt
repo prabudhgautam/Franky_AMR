@@ -1,0 +1,15 @@
+Meaning of each part of kalman.filter.py file
+self.mean_ = estimated angular velocity
+self.variance_ = uncertainty of that estimate
+self.motion_ = change in angular velocity from odom
+self.imu_angular_z_ = new IMU angular velocity reading
+self.motion_variance_ = uncertainty in the motion model
+self.measurement_variance_ = uncertainty in the IMU measurement
+
+The important takeaway
+Mental model should be:
+
+prediction step = prior
+measurement update = posterior
+posterior is the final best estimate for this time step
+posterior becomes the prior for the next time step

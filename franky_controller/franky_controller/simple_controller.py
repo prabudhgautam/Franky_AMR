@@ -25,7 +25,7 @@ class SimpleController(Node):
 
         self.get_logger().info(f"using wheel_radius: {self.wheel_radius}")
         self.get_logger().info(f"using wheel_separation: {self.wheel_separation}")
-
+ 
         self.left_wheel_prev_pos = 0.0
         self.right_wheel_prev_pos = 0.0
         self.prev_time = None
