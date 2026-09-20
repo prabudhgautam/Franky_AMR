@@ -69,6 +69,12 @@ def generate_launch_description():
     wheel_separation = LaunchConfiguration("wheel_separation")
     use_sim_time = LaunchConfiguration("use_sim_time")
 
+    cmd_vel_converter_node = Node(
+        package='franky_controller',
+        executable='cmd_vel_converter.py',
+        name='cmd_vel_converter',
+        output='screen'
+    )
 
     joint_state_broadcaster_spawner = TimerAction(
         period=2.0,
@@ -134,6 +140,7 @@ def generate_launch_description():
         wheel_radius_error_arg,
         wheel_separation_error_arg,
         use_sim_time_arg,
+        cmd_vel_converter_node,
         joint_state_broadcaster_spawner,
         simple_controller_spawner,
         simple_controller_py,

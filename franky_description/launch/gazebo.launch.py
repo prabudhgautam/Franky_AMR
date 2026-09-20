@@ -6,8 +6,7 @@ from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable, IncludeLaunchDescription, TimerAction
 from launch_ros.parameter_descriptions import ParameterValue
 from launch.substitutions import Command, LaunchConfiguration
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-
+from launch.launch_description_sources import PythonLaunchDescriptionSource, AnyLaunchDescriptionSource
 def generate_launch_description():
 
     franky_description_dir = get_package_share_directory("franky_description")
@@ -29,6 +28,17 @@ def generate_launch_description():
         executable="robot_state_publisher",
         parameters=[{"robot_description": robot_description,
                       "use_sim_time": True}],
+    )
+
+    # Include rosbridge_websocket_launch.xml
+    rosbridge_launch = IncludeLaunchDescription(
+        AnyLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory('rosbridge_server'),
+                'launch',
+                'rosbridge_websocket_launch.xml'
+            )
+        )
     )
 
     gazebo_resource_path = SetEnvironmentVariable(
@@ -79,6 +89,7 @@ def generate_launch_description():
     return LaunchDescription([
         model_arg,
         robot_state_publisher_node,
+        rosbridge_launch,
         gazebo_resource_path,
         gazebo,
         gz_spawn_entity,

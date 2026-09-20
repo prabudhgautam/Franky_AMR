@@ -3,22 +3,28 @@
 <package format="3">
   <name>franky_description</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Package description for franky robot</description>
   <maintainer email="prabudhrocky2003@gmail.com">prabudh</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   
+  <!-- Launch dependencies -->
+  <exec_depend>ros2launch</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>ament_index_python</exec_depend>
+  
+  <!-- Robot & Simulation dependencies -->
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>joint_state_publisher</exec_depend>
   <exec_depend>urdf</exec_depend>
   <exec_depend>rviz2</exec_depend>
-  <exec_depend>ros2launch</exec_depend>
   <exec_depend>xacro</exec_depend>
   <exec_depend>ros_gz_sim</exec_depend>
   <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>rosbridge_server</exec_depend>
   <exec_depend condition="$ROS_DISTRO >= iron">gz_ros2_control</exec_depend>
-
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
