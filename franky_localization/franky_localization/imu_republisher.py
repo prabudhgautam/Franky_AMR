@@ -18,7 +18,7 @@ def main(args=None):
     node = Node('imu_republisher_node')
     time.sleep(1)
     imu_pub = node.create_publisher(Imu, "imu_ekf", 10)
-    imu_sub = node.create_subscription(Imu, "imu/out", imuCallback, 10)
+    imu_sub = node.create_subscription(Imu, "/imu/out", imuCallback, 10)
     rclpy.spin(node)
     rclpy.shutdown()
 

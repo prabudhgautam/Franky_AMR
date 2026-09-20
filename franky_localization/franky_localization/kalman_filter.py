@@ -11,6 +11,8 @@ class KalmanFilter(Node):
         super().__init__("kalman_filter")
         self.odom_sub_ = self.create_subscription(Odometry, "franky_controller/odom_noisy", self.odomCallback, 10)
         self.imu_sub_ = self.create_subscription(Imu, "imu/out", self.imuCallback, 10)
+
+#Publish filtered data
         self.odom_pub_ = self.create_publisher(Odometry, "franky_controller/odom_kalman", 10)
         
         # Initially the robot has no idea about how fast is going

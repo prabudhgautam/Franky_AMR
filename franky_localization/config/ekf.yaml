@@ -11,20 +11,20 @@ ekf_filter_node:
       odom0: /franky_controller/odom_noisy
       odom0_config: [false, false, false,
                      false, false, false,
-                     true,  true,  false,
-                     false, false, false,
+                     true,  false,  false,
+                     false, false, true,
                      false, false, false]
+      odom0_differential: false
 
-      odom0_differential: true
+
       imu0: /imu_ekf
-
       imu0_config: [false, false, false,
-                    false, false, true,
+                    false, false, false,
                     false, false, false,
                     false, false, true,
-                    true,  false, false]
-
-      imu0_differential: true
+                    false,  false, false]
+      imu0_differential: false
+      imu0_remove_gravitational_acceleration: true
 
       process_noise_covariance: [0.05,   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
                                  0.0,    0.05,   0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,

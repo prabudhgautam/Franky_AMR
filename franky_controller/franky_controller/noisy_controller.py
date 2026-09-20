@@ -40,6 +40,8 @@ class NoisyController(Node):
         self.odom_msg = Odometry()
         self.odom_msg.header.frame_id = "odom"
         self.odom_msg.child_frame_id = "base_footprint_ekf"
+        self.odom_msg.twist.covariance[0] = 6.80625e-05   # vx variance
+        self.odom_msg.twist.covariance[35] = 9.4200e-03  # vyaw variance
 
 #Normalizing the quaternion which represents the orientation of the robot,
 #which means the sqaured coefficients of the quaternion should sum to 1.0,
