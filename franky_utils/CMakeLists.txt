@@ -11,6 +11,8 @@ find_package(ament_cmake_python REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
 ament_python_install_package(${PROJECT_NAME})
 
@@ -19,9 +21,9 @@ install(
   DESTINATION lib/${PROJECT_NAME}
 )
 
-install(
-  PROGRAMS
-    ${PROJECT_NAME}/Trajectory_Viz_Node.py
+install(PROGRAMS
+  ${PROJECT_NAME}/Trajectory_Viz_Node.py
+  ${PROJECT_NAME}/safety_stop.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

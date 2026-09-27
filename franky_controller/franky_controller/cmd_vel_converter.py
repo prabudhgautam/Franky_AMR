@@ -5,13 +5,15 @@ from geometry_msgs.msg import Twist, TwistStamped
 
 class CmdVelConverter(Node):
     def __init__(self):
-        super().__init__('cmd_vel_converter')
-        # Advertises /cmd_vel as Twist on ROS graph for Rosbridge
-        self.sub = self.create_subscription(Twist, '/cmd_vel', self.cb, 10)
+        super().__init__('cmd_vel_converter') #Twist Relay
+
+        # Subscribes to twist_mux output (Twist)
+        self.sub = self.create_subscription(Twist, 'franky_controller/cmd_vel_unstamped', self.cb, 10)
+
         # Publishes TwistStamped required by franky_controller
         self.pub = self.create_publisher(TwistStamped, '/franky_controller/cmd_vel', 10)
-        self.get_logger().info('CmdVelConverter active: /cmd_vel (Twist) -> /franky_controller/cmd_vel (TwistStamped)')
-
+        self.get_logger().info('CmdVelConverter active: /franky_controller/cmd_vel_unstamped (Twist) -> /franky_controller/cmd_vel (TwistStamped)')
+        
     def cb(self, msg):
         stamped = TwistStamped()
         stamped.header.stamp = self.get_clock().now().to_msg()

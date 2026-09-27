@@ -1,0 +1,8 @@
+twist_mux:
+  ros__parameters:
+    use_stamped: false
+    topics:
+      mobile_app:
+        topic: /cmd_vel #virtual_joystick_publish here
+        timeout: 0.5
+        priority: 100

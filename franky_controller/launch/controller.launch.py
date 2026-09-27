@@ -1,6 +1,6 @@
 from launch import LaunchDescription
 from launch.substitutions import LaunchConfiguration
-from launch.actions import TimerAction, DeclareLaunchArgument, OpaqueFunction
+from launch.actions import TimerAction, DeclareLaunchArgument, OpaqueFunction, IncludeLaunchDescription
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 import os
@@ -14,7 +14,7 @@ def noisy_controller(context, *args, **kwargs):
     wheel_separation_error = float(LaunchConfiguration("wheel_separation_error").perform(context))
 
     noisy_controller_py = TimerAction(
-            period=4.0,
+            period=2.0,
             actions=[
                 Node(
                     package = "franky_controller",
@@ -39,6 +39,8 @@ def generate_launch_description():
         "config",
         "franky_controllers.yaml",
     )
+
+    mux_files = get_package_share_directory("franky_controller")
 
     use_sim_time_arg = DeclareLaunchArgument(
         "use_sim_time",
@@ -69,13 +71,6 @@ def generate_launch_description():
     wheel_separation = LaunchConfiguration("wheel_separation")
     use_sim_time = LaunchConfiguration("use_sim_time")
 
-    cmd_vel_converter_node = Node(
-        package='franky_controller',
-        executable='cmd_vel_converter.py',
-        name='cmd_vel_converter',
-        output='screen'
-    )
-
     joint_state_broadcaster_spawner = TimerAction(
         period=2.0,
         actions=[
@@ -97,7 +92,7 @@ def generate_launch_description():
     )
 
     simple_controller_spawner = TimerAction(
-        period=3.0,
+        period=2.0,
         actions=[
             Node(
                 package="controller_manager",
@@ -117,7 +112,7 @@ def generate_launch_description():
     )
 
     simple_controller_py = TimerAction(
-        period=3.0,
+        period=2.0,
         actions=[
             Node(
                 package = "franky_controller",
@@ -132,6 +127,36 @@ def generate_launch_description():
         ],
     )
 
+    twist_mux_launch = TimerAction(
+        period=2.0,
+        actions=[
+            Node(
+                package="twist_mux",
+                executable="twist_mux",
+                output="screen",
+                remappings=[("cmd_vel_out", "franky_controller/cmd_vel_unstamped")],
+                parameters=[
+                os.path.join(mux_files, "config", "twist_mux_locks.yaml"),
+                os.path.join(mux_files, "config", "twist_mux_topics.yaml"),
+                {"use_sim_time": use_sim_time},
+                ],
+            )
+        ]
+    )
+
+    cmd_vel_converter_node = TimerAction(
+        period=2.0,
+        actions=[
+            Node(
+            package= "franky_controller",
+            executable="cmd_vel_converter.py",
+            name="cmd_vel_converter",
+            parameters=[{"use_sim_time":LaunchConfiguration("use_sim_time")}],
+            output="screen",
+            )
+        ]
+    )
+
     noisy_controller_launch = OpaqueFunction(function=noisy_controller)
 
     return LaunchDescription([
@@ -140,9 +165,10 @@ def generate_launch_description():
         wheel_radius_error_arg,
         wheel_separation_error_arg,
         use_sim_time_arg,
-        cmd_vel_converter_node,
         joint_state_broadcaster_spawner,
         simple_controller_spawner,
         simple_controller_py,
-        noisy_controller_launch
-    ])
+        twist_mux_launch,
+        noisy_controller_launch,
+        cmd_vel_converter_node,
+    ]) 
