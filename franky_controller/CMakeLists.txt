@@ -18,6 +18,7 @@ find_package(rclcpp REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
+find_package(twist_mux_msgs REQUIRED)
 
 
 ament_python_install_package(${PROJECT_NAME})
@@ -31,6 +32,7 @@ install(PROGRAMS
   ${PROJECT_NAME}/simple_controller.py
   ${PROJECT_NAME}/noisy_controller.py
   ${PROJECT_NAME}/cmd_vel_converter.py
+  ${PROJECT_NAME}/Virtual_Joystick_scaler.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -33,6 +33,11 @@ class SimpleController(Node):
         self.y = 0.0
         self.theta = 0.0
 
+        # Command timeout parameters
+        self.last_cmd_time = self.get_clock().now()
+        self.timeout_sec = 0.5  # Stop wheels if no velocity command is received for 0.5s
+        self.timer = self.create_timer(0.1, self.timeoutCallback)  # 10 Hz watchdog check
+
 #Publishers and subscribers for wheel commands, velocity commands, joint states, and odometry data.
         self.wheel_cmd_pub = self.create_publisher(Float64MultiArray, "simple_velocity_controller/commands", 10)
         self.vel_sub_ = self.create_subscription(TwistStamped, "franky_controller/cmd_vel", self.velCallback, 10)
@@ -67,6 +72,7 @@ class SimpleController(Node):
          
 #VELCALLBACK FUNCTION, Inverse kinematics, converting from robot velocity(V and W) to wheel velocity (fi)
     def velCallback(self, msg):
+        self.last_cmd_time = self.get_clock().now()
         robot_speed = np.array([[msg.twist.linear.x],
                                 [msg.twist.angular.z]])
         
@@ -74,6 +80,14 @@ class SimpleController(Node):
         wheel_speed_msg = Float64MultiArray()
         wheel_speed_msg.data = [wheel_speed[1,0], wheel_speed[0,0]]
         self.wheel_cmd_pub.publish(wheel_speed_msg)
+
+#TIMEOUT CALLBACK FUNCTION, checks if twist_mux has stopped forwarding commands
+    def timeoutCallback(self):
+        time_since_last_cmd = (self.get_clock().now() - self.last_cmd_time).nanoseconds / S_TO_NS
+        if time_since_last_cmd > self.timeout_sec:
+            stop_msg = Float64MultiArray()
+            stop_msg.data = [0.0, 0.0]
+            self.wheel_cmd_pub.publish(stop_msg)
 
 #JOINTCALLBACK FUNCTION, forward kinematics, converting from wheel velocity (fi) to robot velocity(V and W)
     def jointCallback(self, msg):

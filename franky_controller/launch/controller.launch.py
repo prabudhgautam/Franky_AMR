@@ -20,7 +20,7 @@ def noisy_controller(context, *args, **kwargs):
                     package = "franky_controller",
                     executable = "noisy_controller.py",
                     parameters = [
-                        {"wheel_radius": wheel_radius + wheel_radius_error},    #parameter/model errors.
+                        {"wheel_radius": wheel_radius + wheel_radius_error},    # parameter/model errors
                         {"wheel_separation": wheel_separation + wheel_separation_error},
                         {"use_sim_time": use_sim_time}
                     ],
@@ -29,9 +29,10 @@ def noisy_controller(context, *args, **kwargs):
             ],
         )
 
-    return[
+    return [
         noisy_controller_py
     ]
+
 
 def generate_launch_description():
     controllers_file = os.path.join(
@@ -127,6 +128,20 @@ def generate_launch_description():
         ],
     )
 
+    # Virtual Joystick Scaler & JoyTurbo Action Server Node
+    virtual_joystick_scaler_node = TimerAction(
+        period=2.0,
+        actions=[
+            Node(
+                package="franky_controller",
+                executable="Virtual_Joystick_scaler.py",
+                name="virtual_joystick_scaler",
+                parameters=[{"use_sim_time": use_sim_time}],
+                output="screen",
+            )
+        ]
+    )
+
     twist_mux_launch = TimerAction(
         period=2.0,
         actions=[
@@ -136,9 +151,9 @@ def generate_launch_description():
                 output="screen",
                 remappings=[("cmd_vel_out", "franky_controller/cmd_vel_unstamped")],
                 parameters=[
-                os.path.join(mux_files, "config", "twist_mux_locks.yaml"),
-                os.path.join(mux_files, "config", "twist_mux_topics.yaml"),
-                {"use_sim_time": use_sim_time},
+                    os.path.join(mux_files, "config", "twist_mux_locks.yaml"),
+                    os.path.join(mux_files, "config", "twist_mux_topics.yaml"),
+                    {"use_sim_time": use_sim_time},
                 ],
             )
         ]
@@ -148,11 +163,11 @@ def generate_launch_description():
         period=2.0,
         actions=[
             Node(
-            package= "franky_controller",
-            executable="cmd_vel_converter.py",
-            name="cmd_vel_converter",
-            parameters=[{"use_sim_time":LaunchConfiguration("use_sim_time")}],
-            output="screen",
+                package="franky_controller",
+                executable="cmd_vel_converter.py",
+                name="cmd_vel_converter",
+                parameters=[{"use_sim_time": use_sim_time}],
+                output="screen",
             )
         ]
     )
@@ -168,7 +183,8 @@ def generate_launch_description():
         joint_state_broadcaster_spawner,
         simple_controller_spawner,
         simple_controller_py,
+        virtual_joystick_scaler_node,  # Added here
         twist_mux_launch,
         noisy_controller_launch,
         cmd_vel_converter_node,
-    ]) 
+    ])

@@ -3,6 +3,6 @@ twist_mux:
     use_stamped: false
     topics:
       mobile_app:
-        topic: /cmd_vel #virtual_joystick_publish here
+        topic: /cmd_vel_raw #virtual_joystick_publish here
         timeout: 0.5
         priority: 100
